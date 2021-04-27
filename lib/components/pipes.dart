@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/sprite.dart';
@@ -9,22 +10,34 @@ class Pipes {
   Rect bottomPipeRect;
   Sprite topPipeSprite;
   Sprite bottomPipeSprite;
+  bool isVisible = true;
+  List<int> heights = [25, 50, 75, 100, 150, 200, 250];
+  int space = 150;
 
   Pipes({this.game}) {
-    topPipeSprite = Sprite('pipe-green.png');
-    bottomPipeSprite = Sprite('pipe-green.png');
-    double pipeHeight = (game.screenSize.height / 2) - 50;
-    double pipeWidth = 50;
+    topPipeSprite = Sprite('top_pipe.png');
+    bottomPipeSprite = Sprite('bottom_pipe.png');
+    int index = Random().nextInt(heights.length);
+    //double pipeHeight = (game.screenSize.height / 2) - 50;
+    double topPipeHeight = (game.screenSize.height / 2) - heights[index];
+    double pipeWidth = 70;
     topPipeRect =
-        Rect.fromLTWH(game.screenSize.width / 2, 0, pipeWidth, pipeHeight);
+        Rect.fromLTWH(game.screenSize.width + 10, 0, pipeWidth, topPipeHeight);
 
-    bottomPipeRect = Rect.fromLTWH(game.screenSize.width / 2,
-        game.screenSize.height - pipeHeight, pipeWidth, pipeHeight);
-
-    topPipeRect.shift(Offset(-2, -2));
+    bottomPipeRect = Rect.fromLTWH(
+        game.screenSize.width + 10,
+        topPipeHeight + space,
+        pipeWidth,
+        game.screenSize.height - topPipeHeight - space);
   }
 
-  void update(double t) {}
+  void update(double t) {
+    topPipeRect = topPipeRect.translate(-t * 60, 0);
+    bottomPipeRect = bottomPipeRect.translate(-t * 60, 0);
+    if (topPipeRect.right < -20) {
+      isVisible = false;
+    }
+  }
 
   void render(Canvas c) {
     topPipeSprite.renderRect(c, topPipeRect);
