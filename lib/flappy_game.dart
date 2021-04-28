@@ -14,8 +14,15 @@ class FlappyGame extends Game {
   FlappyGame() {
     initialize();
     timer = Timer(4, repeat: true, callback: () {
+      print("pipeList.length = ${pipeList.length}");
       var newPipes = Pipes(game: this);
+      print(
+          'new top pipe : top = ${newPipes.topPipeRect.top} and height = ${newPipes.topPipeRect.height}');
+      print(
+          'new bottom pipe : top = ${newPipes.bottomPipeRect.top} and height = ${newPipes.bottomPipeRect.height}');
+
       pipeList.add(newPipes);
+      print("pipeList.length = ${pipeList.length}");
     });
     timer.start();
   }
@@ -23,9 +30,6 @@ class FlappyGame extends Game {
   void initialize() async {
     resize(await Flame.util.initialDimensions());
     background = Background(game: this);
-    //var pipes = Pipes(game: this);
-    //pipeList = [];
-    //pipeList.add(pipes);
   }
 
   @override
