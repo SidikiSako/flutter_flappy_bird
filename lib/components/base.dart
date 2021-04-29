@@ -7,17 +7,17 @@ class Base {
   Sprite baseSprite;
   Rect baseRect;
   final FlappyGame game;
-  final double x_pos;
+  final double xPos;
   bool isVisible = true;
 
-  Base({this.game, this.x_pos}) {
+  Base({this.game, this.xPos}) {
     baseSprite = Sprite('base.png');
     baseRect = Rect.fromLTWH(
-        x_pos, game.screenSize.height - 150, game.screenSize.width, 150);
+        xPos, game.screenSize.height - 150, game.screenSize.width, 150);
   }
 
   void update(double t) {
-    baseRect = baseRect.translate(-t * 60, 0);
+    baseRect = baseRect.translate(-t * 100, 0);
     if (baseRect.right <= 0) {
       isVisible = false;
       //game.spawnBase();

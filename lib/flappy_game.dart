@@ -1,17 +1,20 @@
 import 'dart:ui';
 import 'package:flame/flame.dart';
 import 'package:flame/game/game.dart';
+import 'package:flame/gestures.dart';
 import 'package:flappy/components/base.dart';
 import 'package:flappy/components/bg_component.dart';
+import 'package:flappy/components/bird.dart';
 import 'package:flappy/components/pipes.dart';
 import 'package:flame/time.dart';
 
-class FlappyGame extends Game {
+class FlappyGame extends Game with TapDetector {
   Size screenSize;
   Background background;
   List<Pipes> pipeList = [];
   Timer timer;
   List<Base> baseList;
+  Bird bird;
 
   FlappyGame() {
     initialize();
@@ -22,20 +25,15 @@ class FlappyGame extends Game {
     background = Background(game: this);
 
 // affichage des pipe à l'aide du timer
-    timer = Timer(4, repeat: true, callback: () {
-      print("pipeList.length = ${pipeList.length}");
+    timer = Timer(3, repeat: true, callback: () {
       var newPipes = Pipes(game: this);
-      print(
-          'new top pipe : top = ${newPipes.topPipeRect.top} and height = ${newPipes.topPipeRect.height}');
-      print(
-          'new bottom pipe : top = ${newPipes.bottomPipeRect.top} and height = ${newPipes.bottomPipeRect.height}');
 
       pipeList.add(newPipes);
-      print("pipeList.length = ${pipeList.length}");
     });
     timer.start();
     //on affiche les sols
     spawnBase();
+    bird = Bird(game: this);
   }
 
   @override
@@ -45,6 +43,7 @@ class FlappyGame extends Game {
       pipes.render(canvas);
     });
 
+    bird.render(canvas);
     baseList.forEach((Base base) {
       base.render(canvas);
     });
@@ -69,12 +68,14 @@ class FlappyGame extends Game {
     if (baseList.length < 2) {
       spawnBase();
     }
+
+    bird.update(t);
   }
 
   void spawnBase() {
     baseList = [];
-    var firstBase = Base(game: this, x_pos: 0);
-    var secondBase = Base(game: this, x_pos: screenSize.width);
+    var firstBase = Base(game: this, xPos: 0);
+    var secondBase = Base(game: this, xPos: screenSize.width);
     baseList.add(firstBase);
     baseList.add(secondBase);
   }
@@ -83,5 +84,13 @@ class FlappyGame extends Game {
   void resize(Size size) {
     super.resize(size);
     screenSize = size;
+  }
+
+  @override
+  void onTap() {
+    print("on tap");
+    super.onTap();
+    //bird.isJumping = true;
+    bird.jump();
   }
 }
