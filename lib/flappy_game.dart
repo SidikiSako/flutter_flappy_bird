@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flame/flame.dart';
 import 'package:flame/game/game.dart';
+import 'package:flappy/components/base.dart';
 import 'package:flappy/components/bg_component.dart';
 import 'package:flappy/components/pipes.dart';
 import 'package:flame/time.dart';
@@ -10,9 +11,17 @@ class FlappyGame extends Game {
   Background background;
   List<Pipes> pipeList = [];
   Timer timer;
+  List<Base> baseList;
 
   FlappyGame() {
     initialize();
+  }
+
+  void initialize() async {
+    resize(await Flame.util.initialDimensions());
+    background = Background(game: this);
+
+// affichage des pipe à l'aide du timer
     timer = Timer(4, repeat: true, callback: () {
       print("pipeList.length = ${pipeList.length}");
       var newPipes = Pipes(game: this);
@@ -25,11 +34,8 @@ class FlappyGame extends Game {
       print("pipeList.length = ${pipeList.length}");
     });
     timer.start();
-  }
-
-  void initialize() async {
-    resize(await Flame.util.initialDimensions());
-    background = Background(game: this);
+    //on affiche les sols
+    spawnBase();
   }
 
   @override
@@ -38,7 +44,10 @@ class FlappyGame extends Game {
     pipeList.forEach((pipes) {
       pipes.render(canvas);
     });
-    //pipes.render(canvas);
+
+    baseList.forEach((Base base) {
+      base.render(canvas);
+    });
   }
 
   @override
@@ -50,7 +59,24 @@ class FlappyGame extends Game {
 
     // on supprime les pipes qui ne sont plus visible
     pipeList.removeWhere((Pipes pipes) => pipes.isVisible == false);
-    //pipes.update(t);
+
+    baseList.forEach((Base base) {
+      base.update(t);
+    });
+    //on suprime de la liste les bases qui ne sont plus visbles
+    baseList.removeWhere((Base base) => base.isVisible == false);
+    //on regarde s'il y reste 1 base, on en crée un autre
+    if (baseList.length < 2) {
+      spawnBase();
+    }
+  }
+
+  void spawnBase() {
+    baseList = [];
+    var firstBase = Base(game: this, x_pos: 0);
+    var secondBase = Base(game: this, x_pos: screenSize.width);
+    baseList.add(firstBase);
+    baseList.add(secondBase);
   }
 
   @override

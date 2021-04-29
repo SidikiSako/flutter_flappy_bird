@@ -15,7 +15,8 @@ class Pipes {
   Rect topPipeHeadRect;
   Rect bottomPipeHeadRect;
   bool isVisible = true;
-  List<int> heights = [25, 50, 75, 100, 150, 200, 250];
+  //List<int> heights = [25, 50, 75, 100, 150, 200, 250];
+  List<double> heights;
   int space = 150;
   double pipeWidth = 70;
 
@@ -24,9 +25,17 @@ class Pipes {
     bottomPipeHeadSprite = Sprite('pipe_head.png');
     topPipeBodySprite = Sprite('pipe.png');
     bottomPipeBodySprite = Sprite('pipe.png');
+
+    heights = [
+      game.screenSize.height / 6,
+      game.screenSize.height / 4,
+      game.screenSize.height / 3,
+      game.screenSize.height / 2,
+    ];
+
     int index = Random().nextInt(heights.length);
     //double pipeHeight = (game.screenSize.height / 2) - 50;
-    double topPipeHeight = (game.screenSize.height / 2) - heights[index];
+    double topPipeHeight = heights[index];
     double x = game.screenSize.width + 10;
     //on crée top pipe rect
     topPipeRect = Rect.fromLTWH(x, 0, pipeWidth, topPipeHeight);
