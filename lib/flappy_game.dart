@@ -7,6 +7,7 @@ import 'package:flappy/components/bg_component.dart';
 import 'package:flappy/components/bird.dart';
 import 'package:flappy/components/pipes.dart';
 import 'package:flame/time.dart';
+import 'package:flutter/material.dart';
 
 class FlappyGame extends Game with TapDetector {
   Size screenSize;
@@ -25,7 +26,7 @@ class FlappyGame extends Game with TapDetector {
     background = Background(game: this);
 
 // affichage des pipe à l'aide du timer
-    timer = Timer(3, repeat: true, callback: () {
+    timer = Timer(2, repeat: true, callback: () {
       var newPipes = Pipes(game: this);
 
       pipeList.add(newPipes);
@@ -88,9 +89,20 @@ class FlappyGame extends Game with TapDetector {
 
   @override
   void onTap() {
-    print("on tap");
+    print("on tap dans game");
     super.onTap();
+    bird.onTap();
     //bird.isJumping = true;
-    bird.jump();
+    //bird.jump();
+  }
+
+  void onTapDown(TapDownDetails d) {
+    // print("on tap down");
+    //bird.onTapDown();
+  }
+
+  void onTapUp(TapUpDetails d) {
+    // print("on tap Up");
+    //bird.onTapUp();
   }
 }

@@ -8,11 +8,12 @@ class Bird {
   //Sprite birdSprite;
   Rect birdRect;
   final FlappyGame game;
-  double gravity = 0;
+  double gravity = 5;
   List<Sprite> sprites;
   int spriteIndex = 0;
   Timer timer;
   bool isJumping = false;
+  double maxJumpHeight = 120;
 
   Bird({this.game}) {
     //birdSprite = Sprite('bird_mid.png');
@@ -31,16 +32,24 @@ class Bird {
   }
 
   void update(double t) {
-    //applique la gravité au bird
+    if (isJumping) {
+      print("dans update Bird: isJumping == true");
+      if (maxJumpHeight == 0) {
+        isJumping = false;
+        maxJumpHeight = 120;
+      } else {
+        birdRect = birdRect.translate(0, -12);
+        maxJumpHeight = maxJumpHeight - 10;
+      }
+      //birdRect = birdRect.translate(0, -120);
 
-    // if (isJumping) {
-    //   jump(t);
-    //   //isJumping = false;
-    // }
-    gravity = t * 280;
-    //gravity = 4;
+      //birdRect = birdRect.translate(0, -t * 4000);
+      //isJumping = false;
+    } else {
+      //applique la gravité au bird
+      birdRect = birdRect.translate(0, 7);
+    }
 
-    birdRect = birdRect.translate(0, gravity);
     timer.update(t);
   }
 
@@ -49,11 +58,34 @@ class Bird {
       spriteIndex = 0;
     }
     Sprite birdSprite = sprites[spriteIndex];
-    birdSprite.renderRect(c, birdRect);
+    //birdSprite.renderRect(c, birdRect);
+    if (isJumping) {
+      print("dans render Bird : isJumping == true");
+      //birdSprite.renderRect(c, birdRect);
+      c.save();
+      c.translate(125, birdRect.bottom - (35 / 2));
+
+      c.rotate(-.3);
+      birdSprite.renderRect(c, Rect.fromLTWH(0, 0, 50, 35));
+
+      //isJumping = false;
+      c.restore();
+    } else {
+      //birdSprite.renderRect(c, birdRect);
+      c.save();
+      c.translate(125, birdRect.bottom - (35 / 2));
+      //c.save();
+      c.rotate(.3);
+      birdSprite.renderRect(c, Rect.fromLTWH(0, 0, 50, 35));
+      print("dans render Bird : isJumping == false");
+      c.restore();
+    }
   }
 
-  void jump() {
-    //birdRect = birdRect.translate(0, -120);
-    birdRect = birdRect.translate(0, -120);
+  void onTap() {
+    print("on tap dans Bird.dart");
+    isJumping = true;
+    //sinon quand on tape plusieurs fois, ça fait un comportement bizarre
+    maxJumpHeight = 120;
   }
 }

@@ -17,7 +17,7 @@ class Pipes {
   bool isVisible = true;
   //List<int> heights = [25, 50, 75, 100, 150, 200, 250];
   List<double> heights;
-  int space = 260;
+  int space = 250;
   double pipeWidth = 70;
 
   Pipes({this.game}) {
@@ -53,10 +53,10 @@ class Pipes {
   }
 
   void update(double t) {
-    topPipeRect = topPipeRect.translate(-t * 120, 0);
-    bottomPipeRect = bottomPipeRect.translate(-t * 120, 0);
-    topPipeHeadRect = topPipeHeadRect.translate(-t * 120, 0);
-    bottomPipeHeadRect = bottomPipeHeadRect.translate(-t * 120, 0);
+    topPipeRect = topPipeRect.translate(-t * 130, 0);
+    bottomPipeRect = bottomPipeRect.translate(-t * 130, 0);
+    topPipeHeadRect = topPipeHeadRect.translate(-t * 130, 0);
+    bottomPipeHeadRect = bottomPipeHeadRect.translate(-t * 130, 0);
     if (topPipeRect.right < -20) {
       isVisible = false;
     }
