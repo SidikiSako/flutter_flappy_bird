@@ -4,16 +4,19 @@ import 'package:flame/time.dart';
 
 import '../flappy_game.dart';
 
+const double GRAVITY = 0.25;
+
 class Bird {
   //Sprite birdSprite;
   Rect birdRect;
   final FlappyGame game;
-  double gravity = 5;
+  //double gravity = 0.25;
+  double birdMovement = 0;
   List<Sprite> sprites;
   int spriteIndex = 0;
   Timer timer;
   bool isJumping = false;
-  double maxJumpHeight = 120;
+  int counter = 0;
 
   Bird({this.game}) {
     //birdSprite = Sprite('bird_mid.png');
@@ -33,23 +36,15 @@ class Bird {
 
   void update(double t) {
     if (isJumping) {
-      print("dans update Bird: isJumping == true");
-      if (maxJumpHeight == 0) {
-        isJumping = false;
-        maxJumpHeight = 120;
-      } else {
-        birdRect = birdRect.translate(0, -12);
-        maxJumpHeight = maxJumpHeight - 10;
-      }
-      //birdRect = birdRect.translate(0, -120);
-
-      //birdRect = birdRect.translate(0, -t * 4000);
-      //isJumping = false;
+      birdMovement = -6;
+      //birdMovement = -t * 400;
+      isJumping = false;
     } else {
-      //applique la gravité au bird
-      birdRect = birdRect.translate(0, 7);
+      birdMovement = birdMovement + GRAVITY;
     }
+    birdRect = birdRect.translate(0, birdMovement);
 
+    // pour la mise à jour des images du bird (battement d'ailes)
     timer.update(t);
   }
 
@@ -58,34 +53,22 @@ class Bird {
       spriteIndex = 0;
     }
     Sprite birdSprite = sprites[spriteIndex];
-    //birdSprite.renderRect(c, birdRect);
-    if (isJumping) {
-      print("dans render Bird : isJumping == true");
-      //birdSprite.renderRect(c, birdRect);
-      c.save();
-      c.translate(125, birdRect.bottom - (35 / 2));
+    c.save();
 
-      c.rotate(-.3);
-      birdSprite.renderRect(c, Rect.fromLTWH(0, 0, 50, 35));
+    // on met l'origine du canva au centre de birdRect
+    // c'est cette origine qui sera utilisé comme centre de la rotation
+    c.translate(125, birdRect.bottom - (35 / 2));
 
-      //isJumping = false;
-      c.restore();
-    } else {
-      //birdSprite.renderRect(c, birdRect);
-      c.save();
-      c.translate(125, birdRect.bottom - (35 / 2));
-      //c.save();
-      c.rotate(.3);
-      birdSprite.renderRect(c, Rect.fromLTWH(0, 0, 50, 35));
-      print("dans render Bird : isJumping == false");
-      c.restore();
-    }
+    // on applique la rotation et on dessine le bird
+    c.rotate(birdMovement * 0.06);
+    birdSprite.renderRect(c, Rect.fromLTWH(0, 0, 50, 35));
+
+    // on restore le state pour que l'origine du canva redevienne le coin
+    // supérieur gauche de l'écran
+    c.restore();
   }
 
   void onTap() {
-    print("on tap dans Bird.dart");
     isJumping = true;
-    //sinon quand on tape plusieurs fois, ça fait un comportement bizarre
-    maxJumpHeight = 120;
   }
 }
