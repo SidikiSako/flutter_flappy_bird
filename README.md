@@ -1,6 +1,6 @@
 # flappy
 
-A new Flutter project.
+Flappy bird codé avec Flutter, Dart et le package Flame.
 
 ## Getting Started
 
